@@ -1,7 +1,9 @@
-// Topic - JOB Sequence Loss Minimization
-// problem Statement - Given a set of N jobs with their their time taken to complete and 
-// a loss each job will occur each day for a delay  we have to minimize the loss incur by the
-// jobs.
+// Topic - Maximum Array Sum after k Neagations.
+// Given an Array of n Integers we have to maximize the sum of elements by performing
+// k negation operations i.e arr[i] = -arr[i].
+
+// Approach 2 can be firstly sorting the array. and then performing the k operations from left till we found 0 or a +ve Integer.
+// Another optimized Solution can be using priority queues.
 
 package GeeksForGeeks.GreedyAlgorithms;
 
@@ -12,7 +14,7 @@ import java.util.StringTokenizer;
 
 
 
-public class JobSequenceMinimization {
+public class MaximumArraySum {
 
 	static class FastReader {
         BufferedReader br;
@@ -66,75 +68,32 @@ public class JobSequenceMinimization {
 		// Driver Code.
 		
 		int n = scan.nextInt();
-		
-		// making an array of jobs.
-		JobLoss[] jobs = new JobLoss[n];
+		int k = scan.nextInt();
+		int[] arr = new int[n];
 		
 		for(int i = 0; i < n; i++) {
-			jobs[i] = new JobLoss(scan.nextInt(), scan.nextInt());
+			arr[i] = scan.nextInt();
 		}
 		
-		mergesort(0, n - 1, jobs);
+		while(k-- > 0){
+			int minCur = Integer.MAX_VALUE, index = -1;
+			for(int i = 0; i < n; i++){
+				if(arr[i] < minCur){
+					index = i;
+					minCur = arr[i];
+				}
+			}
+			if(minCur == 0) break;
+			
+			arr[index] = - arr[index];
+		}
 		
+		int sum = 0;
 		for(int i = 0; i < n; i++){
-			System.out.print(jobs[i].loss + " ");
+			sum += arr[i];
 		}
-		System.out.println();
-	}
-	
-	static class JobLoss {
-		int timeTaken;
-		int loss;
-		
-		JobLoss(int time, int loss) {
-			this.timeTaken = time;
-			this.loss = loss;
-		}
-	}
-	
-	static void mergesort(int left , int right, JobLoss[] j) {
-		if( right <= left) return;
-		
-		int mid = (left + right) / 2;
-		
-		mergesort(left, mid, j);
-		mergesort(mid + 1, right, j);
-		
-		// merging the array.
-		JobLoss[] temp = new JobLoss[right - left + 1];
-		int leftPtr = left, rightPtr = mid + 1, tempPtr = 0;
-		
-		while(leftPtr <= mid && rightPtr <= right) {
-			if(j[leftPtr].loss / j[leftPtr].timeTaken < j[rightPtr].loss / j[rightPtr].timeTaken) {
-				temp[tempPtr] = j[rightPtr];
-				rightPtr++;
-			}
-			else {
-				temp[tempPtr] = j[leftPtr];
-				leftPtr++;
-			}
-			tempPtr++;
-		}
-		
-		while(leftPtr <= mid){
-			temp[tempPtr] = j[leftPtr];
-			tempPtr++;
-			leftPtr++;
-		}
-		
-		while(rightPtr <= right){
-			temp[tempPtr] = j[rightPtr];
-			tempPtr++;
-			rightPtr++;
-		}
-		
-		// copying from temp to original.
-		tempPtr = 0;
-		for(int i = left; i <= right; i++, tempPtr++){
-			j[i] = temp[tempPtr];
-		}
-		
-		return;
+		System.out.println(sum);
+
 	}
 
 	private static void printArray(int[] arr){

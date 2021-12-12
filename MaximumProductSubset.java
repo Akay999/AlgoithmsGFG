@@ -1,7 +1,6 @@
-// Topic - JOB Sequence Loss Minimization
-// problem Statement - Given a set of N jobs with their their time taken to complete and 
-// a loss each job will occur each day for a delay  we have to minimize the loss incur by the
-// jobs.
+// Topic - Minimum Product Subset of an Array.
+// Given an array of Integers we have to find out the minimum product possible
+// with the subset of the element of the array.
 
 package GeeksForGeeks.GreedyAlgorithms;
 
@@ -12,7 +11,7 @@ import java.util.StringTokenizer;
 
 
 
-public class JobSequenceMinimization {
+public class MaximumProductSubset {
 
 	static class FastReader {
         BufferedReader br;
@@ -64,77 +63,42 @@ public class JobSequenceMinimization {
 		FastReader scan = new FastReader();
 
 		// Driver Code.
-		
 		int n = scan.nextInt();
+		int[] arr = new int[n];
 		
-		// making an array of jobs.
-		JobLoss[] jobs = new JobLoss[n];
-		
+		// getting the value of minimum +ve maximum -ve
+		int pCounter = 0, nCounter = 0, maxNum = Integer.MIN_VALUE, nProduct = 1, pProduct = 1, nMax = Integer.MIN_VALUE;
 		for(int i = 0; i < n; i++) {
-			jobs[i] = new JobLoss(scan.nextInt(), scan.nextInt());
-		}
-		
-		mergesort(0, n - 1, jobs);
-		
-		for(int i = 0; i < n; i++){
-			System.out.print(jobs[i].loss + " ");
-		}
-		System.out.println();
-	}
-	
-	static class JobLoss {
-		int timeTaken;
-		int loss;
-		
-		JobLoss(int time, int loss) {
-			this.timeTaken = time;
-			this.loss = loss;
-		}
-	}
-	
-	static void mergesort(int left , int right, JobLoss[] j) {
-		if( right <= left) return;
-		
-		int mid = (left + right) / 2;
-		
-		mergesort(left, mid, j);
-		mergesort(mid + 1, right, j);
-		
-		// merging the array.
-		JobLoss[] temp = new JobLoss[right - left + 1];
-		int leftPtr = left, rightPtr = mid + 1, tempPtr = 0;
-		
-		while(leftPtr <= mid && rightPtr <= right) {
-			if(j[leftPtr].loss / j[leftPtr].timeTaken < j[rightPtr].loss / j[rightPtr].timeTaken) {
-				temp[tempPtr] = j[rightPtr];
-				rightPtr++;
+			arr[i] = scan.nextInt();
+			
+			if(arr[i] > 0) {
+				pCounter++;
+				pProduct *= arr[i];
 			}
-			else {
-				temp[tempPtr] = j[leftPtr];
-				leftPtr++;
+			else if(arr[i] < 0){
+				nProduct *= arr[i];
+				nCounter++;
+				nMax = Math.max(nMax, arr[i]);
 			}
-			tempPtr++;
+			maxNum = Math.max(maxNum, arr[i]);
 		}
 		
-		while(leftPtr <= mid){
-			temp[tempPtr] = j[leftPtr];
-			tempPtr++;
-			leftPtr++;
+		if(n == 1){
+			System.out.println(arr[0]);
+			return;
 		}
 		
-		while(rightPtr <= right){
-			temp[tempPtr] = j[rightPtr];
-			tempPtr++;
-			rightPtr++;
+		if(pCounter == 0 && nCounter <= 1){
+			System.out.println(maxNum);
 		}
-		
-		// copying from temp to original.
-		tempPtr = 0;
-		for(int i = left; i <= right; i++, tempPtr++){
-			j[i] = temp[tempPtr];
+		else if (nCounter % 2 == 0) {
+			System.out.println(nProduct * pProduct);
 		}
+		else {
+			System.out.println((nProduct / nMax) * pProduct);
+		}
+			
 		
-		return;
 	}
 
 	private static void printArray(int[] arr){
